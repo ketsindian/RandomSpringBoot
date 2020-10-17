@@ -30,7 +30,7 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
-            Store.addProduct(transactionService.getStaticProductData());
+            Store.addProduct(transactionService.getStaticProductDataFromFile());
             System.out.println("RUNNING PRODUCT SYNC");
         } catch (TransactionException e) {
             e.printStackTrace();

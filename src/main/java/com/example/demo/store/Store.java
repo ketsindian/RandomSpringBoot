@@ -2,6 +2,7 @@ package com.example.demo.store;
 
 import com.example.demo.data.Product;
 import com.example.demo.data.Transaction;
+import com.example.demo.utils.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,5 +19,12 @@ public class Store {
 
     public static void addProduct(List<Product> products){
         products.forEach(product -> PRODUCT_STORE.putIfAbsent(product.getProductId(),product));
+    }
+
+    public static Transaction getTransactionById(long transactionId){
+        Transaction transaction =TRANSACTION_STORE.getOrDefault(transactionId,new Transaction());
+        if(transaction.equals(new Transaction()))
+            throw new ResourceNotFoundException("transaction with id "+transactionId+" not found !");
+        return transaction;
     }
 }

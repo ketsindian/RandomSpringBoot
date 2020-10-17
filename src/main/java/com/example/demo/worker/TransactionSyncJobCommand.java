@@ -3,7 +3,6 @@ package com.example.demo.worker;
 import com.example.demo.service.ITransactionService;
 import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -31,7 +30,7 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
-            Store.addTransactions(transactionService.getLatestTransactions());
+            Store.addTransactions(transactionService.getLatestTransactionsFromFile());
             System.out.println("RUNNING TRANSACTION SYNC");
         } catch (TransactionException e) {
             e.printStackTrace();
