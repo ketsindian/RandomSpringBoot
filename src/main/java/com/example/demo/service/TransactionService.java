@@ -35,18 +35,18 @@ public class TransactionService implements  ITransactionService{
 
     private File getProductFileInFolder(final String folderLocation) throws TransactionException {
         File folder=new File(folderLocation);
-        if (!folder.isDirectory())
+        if (folder.isFile())
             throw new TransactionException(404,"FILE_NOT_FOUND","configured folderlocation for product is not a directory -"+folderLocation);
-        if (Objects.requireNonNull(folder.listFiles()).length<1)
+        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length<1)
             throw new TransactionException(404,"FILE_NOT_FOUND","configured folderlocation for product does not contain any file"+folderLocation);
         return folder.listFiles()[0];
     }
 
     private File[] getUnreadTransactionFiles(final String folderLocation) throws TransactionException {
         File folder=new File(folderLocation);
-        if (!folder.isDirectory())
+        if (folder.isFile())
             throw new TransactionException(404,"FILE_NOT_FOUND","configured folderlocation for product is not a directory"+folderLocation);
-        if (Objects.requireNonNull(folder.listFiles()).length<1)
+        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length<1)
             throw new TransactionException(404,"FILE_NOT_FOUND","configured folderlocation for product does not contain any file"+folderLocation);
         return folder.listFiles();
     }

@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Store {
 
-    private static ConcurrentHashMap<Long, Transaction> TRANSACTION_STORE;
+    private static ConcurrentHashMap<Long, Transaction> TRANSACTION_STORE=new ConcurrentHashMap<>();
 
-    private static ConcurrentHashMap<Long, Product> PRODUCT_STORE;
+    private static ConcurrentHashMap<Long, Product> PRODUCT_STORE=new ConcurrentHashMap<>();
 
     public static void addTransactions(List<Transaction> transactions){
         transactions.forEach(transaction -> TRANSACTION_STORE.putIfAbsent(transaction.getTransactionId(),transaction));

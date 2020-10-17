@@ -19,18 +19,19 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
 
     @Override
     public TimeUnit getIntervalUnit() {
-        return TimeUnit.DAYS;
+        return TimeUnit.MINUTES;
     }
 
     @Override
     public long getRecurringInterval() {
-        return 5;
+        return 2;
     }
 
     @Override
     public void run() {
         try {
             Store.addProduct(transactionService.getStaticProductData());
+            System.out.println("RUNNING PRODUCT SYNC");
         } catch (TransactionException e) {
             e.printStackTrace();
         }

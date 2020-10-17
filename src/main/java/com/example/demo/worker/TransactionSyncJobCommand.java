@@ -20,7 +20,7 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
 
     @Override
     public TimeUnit getIntervalUnit() {
-        return TimeUnit.MINUTES;
+        return TimeUnit.SECONDS;
     }
 
     @Override
