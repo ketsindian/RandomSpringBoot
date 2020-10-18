@@ -3,6 +3,8 @@ package com.example.demo.worker;
 import com.example.demo.service.ITransactionService;
 import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,8 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
         this.transactionService = transactionService;
     }
 
+    Logger logger = LoggerFactory.getLogger(ProductSyncJobCommand.class);
+
     @Override
     public TimeUnit getIntervalUnit() {
         return TimeUnit.DAYS;
@@ -30,8 +34,10 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
+            logger.info("ProductSyncJobCommand triggered");
             Store.addProduct(transactionService.getStaticProductDataFromFile());
-            System.out.println("RUNNING PRODUCT SYNC");
+            logger.info("ProductSyncJobCommand synced products");
+
         } catch (TransactionException e) {
             e.printStackTrace();
         }

@@ -4,6 +4,8 @@ import com.example.demo.data.*;
 import com.example.demo.store.Store;
 import com.example.demo.utils.CSVReadHelper;
 import com.example.demo.utils.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +25,21 @@ public class TransactionService implements ITransactionService {
     @Value("${app.folderlocation.transaction}")
     private String transactionFolderLocation;
 
+    Logger logger = LoggerFactory.getLogger(TransactionService.class);
+
+
     @Override
     public List<Transaction> getLatestTransactionsFromFile() {
         File[] files = getUnreadTransactionFiles(this.transactionFolderLocation);
+        if(files.length>0)
+        logger.info("got new files to sync transactions "+files);
         List<Transaction> transactions = new ArrayList<>();
         Arrays.stream(files).forEachOrdered(file -> transactions.addAll(CSVReadHelper.readTransaction(file.getPath())));
         for (File file : files) {
             Store.markFileAsProcessed(file);
         }
+        if(transactions.size()>0)
+        logger.info("got new transactions to sync "+transactions.size());
         return transactions;
     }
 

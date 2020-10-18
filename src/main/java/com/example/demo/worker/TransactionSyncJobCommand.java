@@ -4,6 +4,8 @@ import com.example.demo.data.Transaction;
 import com.example.demo.service.ITransactionService;
 import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +21,8 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
         this.transactionService = transactionService;
     }
 
+    Logger logger = LoggerFactory.getLogger(TransactionSyncJobCommand.class);
+
     @Override
     public TimeUnit getIntervalUnit() {
         return TimeUnit.MINUTES;
@@ -32,10 +36,10 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
+            logger.info("TransactionSyncJobCommand triggered");
             List<Transaction> transactionsToSync = transactionService.getLatestTransactionsFromFile();
             Store.addTransactions(transactionsToSync);
-
-            System.out.println("RUNNING TRANSACTION SYNC");
+            logger.info("TransactionSyncJobCommand synced "+transactionsToSync.size()+" transactions");
         } catch (TransactionException e) {
             e.printStackTrace();
         }
