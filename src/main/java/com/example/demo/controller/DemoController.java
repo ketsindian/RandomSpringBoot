@@ -4,11 +4,7 @@ import com.example.demo.data.SummaryByCity;
 import com.example.demo.data.SummaryByProduct;
 import com.example.demo.data.Transaction;
 import com.example.demo.service.ITransactionService;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.example.demo.service.ServiceConfig;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +18,8 @@ public class DemoController {
 
     private final ITransactionService transactionService;
 
-    public DemoController(@Qualifier("imdbService") ITransactionService transactionService) {
-        this.transactionService = transactionService;
+    public DemoController(ServiceConfig serviceConfig) {
+        this.transactionService = serviceConfig.getTransactionService();
     }
 
     @GetMapping("/transaction/{id}")

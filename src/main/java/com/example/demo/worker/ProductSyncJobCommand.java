@@ -1,6 +1,7 @@
 package com.example.demo.worker;
 
 import com.example.demo.service.ITransactionService;
+import com.example.demo.service.ServiceConfig;
 import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
 import org.slf4j.Logger;
@@ -21,8 +22,8 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
     final
     ITransactionService transactionService;
 
-    public ProductSyncJobCommand(@Qualifier("imdbService") ITransactionService transactionService) {
-        this.transactionService = transactionService;
+    public ProductSyncJobCommand(ServiceConfig serviceConfig) {
+        this.transactionService = serviceConfig.getTransactionService();
     }
 
     Logger logger = LoggerFactory.getLogger(ProductSyncJobCommand.class);
