@@ -18,4 +18,8 @@ public interface ITransactionService {
     public List<SummaryByProduct> getSummaryByProduct(long numberOfDays);
 
     public List<SummaryByCity> getSummaryByCity(long numberOfDays);
+
+    public void syncTransactions();
+
+    public void syncProducts();
 }

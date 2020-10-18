@@ -35,9 +35,7 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
     public void run() {
         try {
             logger.info("ProductSyncJobCommand triggered");
-            Store.addProduct(transactionService.getStaticProductDataFromFile());
-            logger.info("ProductSyncJobCommand synced products");
-
+            transactionService.syncProducts();
         } catch (TransactionException e) {
             e.printStackTrace();
         }

@@ -95,6 +95,19 @@ public class TransactionService implements ITransactionService {
         return buildSummaryCityFromHM(hmForAmountSUm);
     }
 
+    @Override
+    public void syncTransactions() {
+        List<Transaction> transactionsToSync = this.getLatestTransactionsFromFile();
+        Store.addTransactions(transactionsToSync);
+        logger.info("TransactionSyncJobCommand synced "+transactionsToSync.size()+" transactions");
+    }
+
+    @Override
+    public void syncProducts() {
+        Store.addProduct(this.getStaticProductDataFromFile());
+        logger.info("ProductSyncJobCommand synced products");
+    }
+
     private List<SummaryByCity> buildSummaryCityFromHM(HashMap<String, Double> hmForAmountSUm){
         List<SummaryByCity> summaryByCities = new ArrayList<>();
         hmForAmountSUm.forEach((aString, aDouble) -> {

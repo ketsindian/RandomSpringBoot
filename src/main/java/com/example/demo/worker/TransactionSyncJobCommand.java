@@ -37,9 +37,7 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     public void run() {
         try {
             logger.info("TransactionSyncJobCommand triggered");
-            List<Transaction> transactionsToSync = transactionService.getLatestTransactionsFromFile();
-            Store.addTransactions(transactionsToSync);
-            logger.info("TransactionSyncJobCommand synced "+transactionsToSync.size()+" transactions");
+            transactionService.syncTransactions();
         } catch (TransactionException e) {
             e.printStackTrace();
         }
