@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class TransactionService implements ITransactionService {
+public class TransactionService extends HelperService implements ITransactionService {
 
 
     @Value("${app.folderlocation.product}")
@@ -69,17 +69,6 @@ public class TransactionService implements ITransactionService {
         return buildSummaryProductsFromHM(hmForAmountSUm);
     }
 
-    private List<SummaryByProduct> buildSummaryProductsFromHM(HashMap<Long, Double> hmForAmountSUm){
-        List<SummaryByProduct> summaryByProducts = new ArrayList<>();
-        hmForAmountSUm.forEach((aLong, aDouble) -> {
-            SummaryByProduct summaryByProduct = new SummaryByProduct();
-            summaryByProduct.setProductName(Store.getProductNameById(aLong));
-            summaryByProduct.setTotalAmount(aDouble);
-            summaryByProducts.add(summaryByProduct);
-        });
-        return summaryByProducts;
-    }
-
     @Override
     public List<SummaryByCity> getSummaryByCity(long numberOfDays) {
         List<CompleteTransaction> transactions = Store.getCompleteTransactions();
@@ -106,35 +95,6 @@ public class TransactionService implements ITransactionService {
     public void syncProducts() {
         Store.addProduct(this.getStaticProductDataFromFile());
         logger.info("ProductSyncJobCommand synced products");
-    }
-
-    private List<SummaryByCity> buildSummaryCityFromHM(HashMap<String, Double> hmForAmountSUm){
-        List<SummaryByCity> summaryByCities = new ArrayList<>();
-        hmForAmountSUm.forEach((aString, aDouble) -> {
-            SummaryByCity summaryByCity = new SummaryByCity();
-            summaryByCity.setCityName(aString);
-            summaryByCity.setTotalAmount(aDouble);
-            summaryByCities.add(summaryByCity);
-        });
-        return summaryByCities;
-    }
-
-    private File getProductFileInFolder(final String folderLocation) {
-        File folder = new File(folderLocation);
-        if (folder.isFile())
-            throw new ResourceNotFoundException("configured folderlocation for product is not a directory " + folderLocation);
-        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length < 1)
-            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file " + folderLocation);
-        return folder.listFiles()[0];
-    }
-
-    private File[] getUnreadTransactionFiles(final String folderLocation) {
-        File folder = new File(folderLocation);
-        if (folder.isFile())
-            throw new ResourceNotFoundException("configured folderlocation for product is not a directory " + folderLocation);
-        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length < 1)
-            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file " + folderLocation);
-        return Arrays.stream(folder.listFiles()).filter(file -> !Store.isFileProcessed(file)).toArray(File[]::new);
     }
 
 }
