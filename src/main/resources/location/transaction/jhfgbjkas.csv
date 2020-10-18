@@ -1,0 +1,4 @@
+transactionId, productId, transactionAmount,transactionDatetime1
+1231,20, 1230.0, 2020-10-01 10:10:10
+22,30, 9990.0, 2020-10-10 10:15:10
+33,20, 1123.0, 2020-10-01 10:05:10

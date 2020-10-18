@@ -5,13 +5,13 @@ import com.example.demo.data.SummaryByCity;
 import com.example.demo.data.SummaryByProduct;
 import com.example.demo.data.Transaction;
 
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 public interface ITransactionService {
 
     public List<Transaction> getLatestTransactionsFromFile();
-
-    public List<Product> getStaticProductDataFromFile();
 
     public Transaction getTransactionById(long transactionId);
 
@@ -22,4 +22,5 @@ public interface ITransactionService {
     public void syncTransactions();
 
     public void syncProducts();
+
 }

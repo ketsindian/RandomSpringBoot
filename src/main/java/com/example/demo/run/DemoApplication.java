@@ -5,11 +5,15 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @ComponentScan(basePackages = {"com.example.*"})
 @SpringBootApplication
+@EnableRedisRepositories("com.example.*")
+@EnableCaching
 public class DemoApplication implements ApplicationRunner {
 
     final

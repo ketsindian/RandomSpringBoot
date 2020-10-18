@@ -6,6 +6,7 @@ import com.example.demo.utils.CSVReadHelper;
 import com.example.demo.utils.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class TransactionService extends HelperService implements ITransactionService {
+@Qualifier("storeService")
+public class StoreTransactionService extends HelperService implements ITransactionService {
 
 
     @Value("${app.folderlocation.product}")
@@ -25,7 +27,7 @@ public class TransactionService extends HelperService implements ITransactionSer
     @Value("${app.folderlocation.transaction}")
     private String transactionFolderLocation;
 
-    Logger logger = LoggerFactory.getLogger(TransactionService.class);
+    Logger logger = LoggerFactory.getLogger(StoreTransactionService.class);
 
 
     @Override
@@ -41,12 +43,6 @@ public class TransactionService extends HelperService implements ITransactionSer
         if(transactions.size()>0)
         logger.info("got new transactions to sync "+transactions.size());
         return transactions;
-    }
-
-    @Override
-    public List<Product> getStaticProductDataFromFile() {
-        File productFile = getProductFileInFolder(this.referenceFolderLocation);
-        return CSVReadHelper.readProduct(productFile.getPath());
     }
 
     @Override
@@ -93,8 +89,28 @@ public class TransactionService extends HelperService implements ITransactionSer
 
     @Override
     public void syncProducts() {
-        Store.addProduct(this.getStaticProductDataFromFile());
+        Store.addProduct(getStaticProductDataFromFile(this.referenceFolderLocation));
         logger.info("ProductSyncJobCommand synced products");
+    }
+
+    private List<SummaryByProduct> buildSummaryProductsFromHM(HashMap<Long, Double> hmForAmountSUm){
+        List<SummaryByProduct> summaryByProducts = new ArrayList<>();
+        hmForAmountSUm.forEach((aLong, aDouble) -> {
+            SummaryByProduct summaryByProduct = new SummaryByProduct();
+            summaryByProduct.setProductName(Store.getProductNameById(aLong));
+            summaryByProduct.setTotalAmount(aDouble);
+            summaryByProducts.add(summaryByProduct);
+        });
+        return summaryByProducts;
+    }
+
+    private File[] getUnreadTransactionFiles(final String folderLocation) {
+        File folder = new File(folderLocation);
+        if (folder.isFile())
+            throw new ResourceNotFoundException("configured folderlocation for product is not a directory " + folderLocation);
+        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length < 1)
+            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file " + folderLocation);
+        return Arrays.stream(folder.listFiles()).filter(file -> !Store.isFileProcessed(file)).toArray(File[]::new);
     }
 
 }

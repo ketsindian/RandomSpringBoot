@@ -5,6 +5,7 @@ import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
     final
     ITransactionService transactionService;
 
-    public ProductSyncJobCommand(ITransactionService transactionService) {
+    public ProductSyncJobCommand(@Qualifier("imdbService") ITransactionService transactionService) {
         this.transactionService = transactionService;
     }
 

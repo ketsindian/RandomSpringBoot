@@ -6,6 +6,7 @@ import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,13 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     @Value("${app.transactionsynccommand.intervalinminutes}")
     private int intervalInMinutes;
 
+    @Value("${app.data.implementation}")
+    private String dataImplementation;
+
     final
     ITransactionService transactionService;
 
-    public TransactionSyncJobCommand(ITransactionService transactionService) {
+    public TransactionSyncJobCommand(@Qualifier("imdbService") ITransactionService transactionService) {
         this.transactionService = transactionService;
     }
 

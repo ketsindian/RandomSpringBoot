@@ -1,11 +1,15 @@
 package com.example.demo.data;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.Date;
 
 @Data
+@RedisHash("Transaction")
 public class Transaction {
+    @Id
     private long transactionId;
 
     private long productId;
