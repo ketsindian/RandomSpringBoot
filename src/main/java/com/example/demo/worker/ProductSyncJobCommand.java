@@ -19,7 +19,7 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
 
     @Override
     public TimeUnit getIntervalUnit() {
-        return TimeUnit.MINUTES;
+        return TimeUnit.DAYS;
     }
 
     @Override

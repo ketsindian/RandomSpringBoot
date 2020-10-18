@@ -1,10 +1,12 @@
 package com.example.demo.worker;
 
+import com.example.demo.data.Transaction;
 import com.example.demo.service.ITransactionService;
 import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -19,7 +21,7 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
 
     @Override
     public TimeUnit getIntervalUnit() {
-        return TimeUnit.SECONDS;
+        return TimeUnit.MINUTES;
     }
 
     @Override
@@ -30,7 +32,9 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
-            Store.addTransactions(transactionService.getLatestTransactionsFromFile());
+            List<Transaction> transactionsToSync=transactionService.getLatestTransactionsFromFile();
+            Store.addTransactions(transactionsToSync);
+
             System.out.println("RUNNING TRANSACTION SYNC");
         } catch (TransactionException e) {
             e.printStackTrace();

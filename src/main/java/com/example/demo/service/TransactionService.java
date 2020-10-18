@@ -1,18 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.data.Product;
-import com.example.demo.data.Transaction;
+import com.example.demo.data.*;
 import com.example.demo.store.Store;
 import com.example.demo.utils.CSVReadHelper;
 import com.example.demo.utils.ResourceNotFoundException;
-import com.example.demo.utils.TransactionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class TransactionService implements  ITransactionService{
@@ -25,23 +21,63 @@ public class TransactionService implements  ITransactionService{
     private  String transactionFolderLocation;
 
     @Override
-    public List<Transaction> getLatestTransactionsFromFile() throws TransactionException {
+    public List<Transaction> getLatestTransactionsFromFile(){
         File[] files=getUnreadTransactionFiles(this.transactionFolderLocation);
         return CSVReadHelper.readTransaction(files[0].getPath());
     }
 
     @Override
-    public List<Product> getStaticProductDataFromFile() throws TransactionException {
+    public List<Product> getStaticProductDataFromFile(){
         File productFile=getProductFileInFolder(this.referenceFolderLocation);
         return CSVReadHelper.readProduct(productFile.getPath());
     }
 
     @Override
-    public Transaction getTransactionById(long transactionId) throws TransactionException {
+    public Transaction getTransactionById(long transactionId){
         return Store.getTransactionById(transactionId);
     }
 
-    private File getProductFileInFolder(final String folderLocation) throws TransactionException {
+    @Override
+    public List<SummaryByProduct> getSummaryByProduct(long numberOfDays) {
+        List<SummaryByProduct> summaryByProducts = new ArrayList<>();
+        Collection<Transaction> transactions = Store.getAllTransactions();
+        HashMap<Long, Double> hmForAmountSUm = new HashMap<>();
+        transactions.forEach(transaction -> {
+            if (!hmForAmountSUm.containsKey(transaction.getProductId())) {
+                hmForAmountSUm.put(transaction.getProductId(), (double) 0);
+            }
+            hmForAmountSUm.put(transaction.getProductId(), hmForAmountSUm.get(transaction.getProductId()) + transaction.getTransactionAmount());
+        });
+        hmForAmountSUm.forEach((aLong, aDouble) -> {
+            SummaryByProduct summaryByProduct = new SummaryByProduct();
+            summaryByProduct.setProductName(Store.getProductNameById(aLong));
+            summaryByProduct.setTotalAmount(aDouble);
+            summaryByProducts.add(summaryByProduct);
+        });
+        return summaryByProducts;
+    }
+
+    @Override
+    public List<SummaryByCity> getSummaryByCity(long numberOfDays) {
+        List<SummaryByCity> summaryByCities = new ArrayList<>();
+        List<CompleteTransaction> transactions = Store.getCompleteTransactions();
+        HashMap<String, Double> hmForAmountSUm = new HashMap<>();
+        transactions.forEach(transaction -> {
+            if (!hmForAmountSUm.containsKey(transaction.getProductManufacturingCity())) {
+                hmForAmountSUm.put(transaction.getProductManufacturingCity(), (double) 0);
+            }
+            hmForAmountSUm.put(transaction.getProductManufacturingCity(), hmForAmountSUm.get(transaction.getProductManufacturingCity()) + transaction.getTransactionAmount());
+        });
+        hmForAmountSUm.forEach((aString, aDouble) -> {
+            SummaryByCity summaryByCity = new SummaryByCity();
+            summaryByCity.setCityName(aString);
+            summaryByCity.setTotalAmount(aDouble);
+            summaryByCities.add(summaryByCity);
+        });
+        return summaryByCities;
+    }
+
+    private File getProductFileInFolder(final String folderLocation)  {
         File folder=new File(folderLocation);
         if (folder.isFile())
             throw new ResourceNotFoundException ("configured folderlocation for product is not a directory "+folderLocation);
@@ -50,7 +86,7 @@ public class TransactionService implements  ITransactionService{
         return folder.listFiles()[0];
     }
 
-    private File[] getUnreadTransactionFiles(final String folderLocation) throws TransactionException {
+    private File[] getUnreadTransactionFiles(final String folderLocation) {
         File folder=new File(folderLocation);
         if (folder.isFile())
             throw new ResourceNotFoundException ("configured folderlocation for product is not a directory "+folderLocation);
