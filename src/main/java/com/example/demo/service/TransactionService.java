@@ -23,7 +23,12 @@ public class TransactionService implements  ITransactionService{
     @Override
     public List<Transaction> getLatestTransactionsFromFile(){
         File[] files=getUnreadTransactionFiles(this.transactionFolderLocation);
-        return CSVReadHelper.readTransaction(files[0].getPath());
+        List<Transaction> transactions=new ArrayList<>();
+        Arrays.stream(files).forEachOrdered(file-> transactions.addAll(CSVReadHelper.readTransaction(file.getPath())));
+        for (File file : files) {
+            Store.markFileAsProcessed(file);
+        }
+        return transactions;
     }
 
     @Override
@@ -92,7 +97,7 @@ public class TransactionService implements  ITransactionService{
             throw new ResourceNotFoundException ("configured folderlocation for product is not a directory "+folderLocation);
         if (Objects.isNull(folder.listFiles()) || folder.listFiles().length<1)
             throw new ResourceNotFoundException("configured folderlocation for product does not contain any file "+folderLocation);
-        return folder.listFiles();
+        return Arrays.stream(folder.listFiles()).filter(file->!Store.isFileProcessed(file)).toArray(File[]::new);
     }
 
 }

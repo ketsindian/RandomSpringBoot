@@ -5,8 +5,10 @@ import com.example.demo.data.Product;
 import com.example.demo.data.Transaction;
 import com.example.demo.utils.ResourceNotFoundException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +17,8 @@ public class Store {
     private static final ConcurrentHashMap<Long, Transaction> TRANSACTION_STORE=new ConcurrentHashMap<>();
 
     private static final ConcurrentHashMap<Long, Product> PRODUCT_STORE=new ConcurrentHashMap<>();
+
+    private static final HashSet<File> FILES_PROCESSED=new HashSet<>();
 
     public static void addTransactions(List<Transaction> transactions){
         transactions.forEach(transaction -> TRANSACTION_STORE.putIfAbsent(transaction.getTransactionId(),transaction));
@@ -52,5 +56,12 @@ public class Store {
 
     public static String getProductNameById(long productId){
         return PRODUCT_STORE.get(productId).getProductName();
+    }
+    public static boolean isFileProcessed(File file){
+        return FILES_PROCESSED.contains(file);
+    }
+
+    public static boolean markFileAsProcessed(File file){
+        return FILES_PROCESSED.add(file);
     }
 }
