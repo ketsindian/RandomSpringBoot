@@ -5,6 +5,9 @@ import com.example.demo.data.Transaction;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,10 +27,10 @@ public class CSVReadHelper {
                 transaction.setTransactionId(Long.parseLong(record.get(0)));
                 transaction.setProductId(Long.parseLong(record.get(1)));
                 transaction.setTransactionAmount(Double.parseDouble(record.get(2)));
-                transaction.setTransactionDatetime(record.get(3));
+                transaction.setTransactionDatetime(Helper.extractDateFromCSV(record.get(3)));
                 transactions.add(transaction);
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | ParseException e) {
             e.printStackTrace();
         }
         return transactions;

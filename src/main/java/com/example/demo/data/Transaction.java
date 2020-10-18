@@ -2,6 +2,8 @@ package com.example.demo.data;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class Transaction {
     private long transactionId;
@@ -10,7 +12,7 @@ public class Transaction {
 
     private double transactionAmount;
 
-    private String transactionDatetime;
+    private Date transactionDatetime;
 
     public long getTransactionId() {
         return transactionId;
@@ -36,11 +38,11 @@ public class Transaction {
         this.transactionAmount = transactionAmount;
     }
 
-    public String getTransactionDatetime() {
+    public Date getTransactionDatetime() {
         return transactionDatetime;
     }
 
-    public void setTransactionDatetime(String transactionDatetime) {
+    public void setTransactionDatetime(Date transactionDatetime) {
         this.transactionDatetime = transactionDatetime;
     }
 
