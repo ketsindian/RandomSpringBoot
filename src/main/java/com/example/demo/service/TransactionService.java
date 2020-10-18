@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -44,8 +47,9 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public List<SummaryByProduct> getSummaryByProduct(long numberOfDays) {
-        List<SummaryByProduct> summaryByProducts = new ArrayList<>();
         Collection<Transaction> transactions = Store.getAllTransactions();
+        transactions=transactions.stream().filter(transaction -> transaction.getTransactionDatetime().
+                after(Date.from(LocalDate.now().minusDays(numberOfDays).atStartOfDay(ZoneId.systemDefault()).toInstant()))).collect(Collectors.toList());
         HashMap<Long, Double> hmForAmountSUm = new HashMap<>();
         transactions.forEach(transaction -> {
             if (!hmForAmountSUm.containsKey(transaction.getProductId())) {
@@ -53,6 +57,11 @@ public class TransactionService implements ITransactionService {
             }
             hmForAmountSUm.put(transaction.getProductId(), hmForAmountSUm.get(transaction.getProductId()) + transaction.getTransactionAmount());
         });
+        return buildSummaryProductsFromHM(hmForAmountSUm);
+    }
+
+    private List<SummaryByProduct> buildSummaryProductsFromHM(HashMap<Long, Double> hmForAmountSUm){
+        List<SummaryByProduct> summaryByProducts = new ArrayList<>();
         hmForAmountSUm.forEach((aLong, aDouble) -> {
             SummaryByProduct summaryByProduct = new SummaryByProduct();
             summaryByProduct.setProductName(Store.getProductNameById(aLong));
@@ -64,8 +73,9 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public List<SummaryByCity> getSummaryByCity(long numberOfDays) {
-        List<SummaryByCity> summaryByCities = new ArrayList<>();
         List<CompleteTransaction> transactions = Store.getCompleteTransactions();
+        transactions=transactions.stream().filter(transaction -> transaction.getTransactionDatetime().
+                after(Date.from(LocalDate.now().minusDays(numberOfDays).atStartOfDay(ZoneId.systemDefault()).toInstant()))).collect(Collectors.toList());
         HashMap<String, Double> hmForAmountSUm = new HashMap<>();
         transactions.forEach(transaction -> {
             if (!hmForAmountSUm.containsKey(transaction.getProductManufacturingCity())) {
@@ -73,6 +83,11 @@ public class TransactionService implements ITransactionService {
             }
             hmForAmountSUm.put(transaction.getProductManufacturingCity(), hmForAmountSUm.get(transaction.getProductManufacturingCity()) + transaction.getTransactionAmount());
         });
+        return buildSummaryCityFromHM(hmForAmountSUm);
+    }
+
+    private List<SummaryByCity> buildSummaryCityFromHM(HashMap<String, Double> hmForAmountSUm){
+        List<SummaryByCity> summaryByCities = new ArrayList<>();
         hmForAmountSUm.forEach((aString, aDouble) -> {
             SummaryByCity summaryByCity = new SummaryByCity();
             summaryByCity.setCityName(aString);
