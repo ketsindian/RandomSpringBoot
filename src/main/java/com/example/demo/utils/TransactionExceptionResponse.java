@@ -12,7 +12,7 @@ public class TransactionExceptionResponse {
 
     private String details;
 
-    public TransactionExceptionResponse(int errorCode, String message,  String details,LocalDateTime timestamp) {
+    public TransactionExceptionResponse(int errorCode, String message, String details, LocalDateTime timestamp) {
         this.errorCode = errorCode;
         this.message = message;
         this.timestamp = timestamp;

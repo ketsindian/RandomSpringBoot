@@ -1,8 +1,5 @@
 package com.example.demo.worker;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,8 +22,8 @@ public class SyncJobExecutor {
     public void execute() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         List<ScheduledFuture> futures = new ArrayList<>();
-        for (SyncJobCommandInterface command:commands){
-        futures.add(executor.scheduleAtFixedRate(command, 0, command.getRecurringInterval(), command.getIntervalUnit()));
+        for (SyncJobCommandInterface command : commands) {
+            futures.add(executor.scheduleAtFixedRate(command, 0, command.getRecurringInterval(), command.getIntervalUnit()));
         }
     }
 

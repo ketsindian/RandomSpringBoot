@@ -1,8 +1,6 @@
 package com.example.demo.data;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class Transaction {

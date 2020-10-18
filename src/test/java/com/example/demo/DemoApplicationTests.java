@@ -21,11 +21,11 @@ class DemoApplicationTests {
     }
 
     @Test
-    void runCSVRead(){
-        List<Transaction> transactions=CSVReadHelper.readTransaction("D:\\sandbox\\demo\\src\\main\\resources\\static\\transaction.csv");
-        System.out.println("read transactions - "+transactions);
-        List<Product> products=CSVReadHelper.readProduct("D:\\sandbox\\demo\\src\\main\\resources\\static\\product.csv");
-        System.out.println("read products - "+products);
+    void runCSVRead() {
+        List<Transaction> transactions = CSVReadHelper.readTransaction("D:\\sandbox\\demo\\src\\main\\resources\\static\\transaction.csv");
+        System.out.println("read transactions - " + transactions);
+        List<Product> products = CSVReadHelper.readProduct("D:\\sandbox\\demo\\src\\main\\resources\\static\\product.csv");
+        System.out.println("read products - " + products);
     }
 
 }

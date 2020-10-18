@@ -1,6 +1,6 @@
 package com.example.demo.data;
 
-public class CompleteTransaction extends Transaction{
+public class CompleteTransaction extends Transaction {
 
     private String productName;
 
@@ -25,7 +25,7 @@ public class CompleteTransaction extends Transaction{
     @Override
     public String toString() {
         return "CompleteTransaction{" +
-                super.toString()+
+                super.toString() +
                 "productName='" + productName + '\'' +
                 ", productManufacturingCity='" + productManufacturingCity + '\'' +
                 '}';

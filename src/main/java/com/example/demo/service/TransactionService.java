@@ -11,20 +11,20 @@ import java.io.File;
 import java.util.*;
 
 @Service
-public class TransactionService implements  ITransactionService{
+public class TransactionService implements ITransactionService {
 
 
     @Value("${app.folderlocation.product}")
-    private  String referenceFolderLocation;
+    private String referenceFolderLocation;
 
     @Value("${app.folderlocation.transaction}")
-    private  String transactionFolderLocation;
+    private String transactionFolderLocation;
 
     @Override
-    public List<Transaction> getLatestTransactionsFromFile(){
-        File[] files=getUnreadTransactionFiles(this.transactionFolderLocation);
-        List<Transaction> transactions=new ArrayList<>();
-        Arrays.stream(files).forEachOrdered(file-> transactions.addAll(CSVReadHelper.readTransaction(file.getPath())));
+    public List<Transaction> getLatestTransactionsFromFile() {
+        File[] files = getUnreadTransactionFiles(this.transactionFolderLocation);
+        List<Transaction> transactions = new ArrayList<>();
+        Arrays.stream(files).forEachOrdered(file -> transactions.addAll(CSVReadHelper.readTransaction(file.getPath())));
         for (File file : files) {
             Store.markFileAsProcessed(file);
         }
@@ -32,13 +32,13 @@ public class TransactionService implements  ITransactionService{
     }
 
     @Override
-    public List<Product> getStaticProductDataFromFile(){
-        File productFile=getProductFileInFolder(this.referenceFolderLocation);
+    public List<Product> getStaticProductDataFromFile() {
+        File productFile = getProductFileInFolder(this.referenceFolderLocation);
         return CSVReadHelper.readProduct(productFile.getPath());
     }
 
     @Override
-    public Transaction getTransactionById(long transactionId){
+    public Transaction getTransactionById(long transactionId) {
         return Store.getTransactionById(transactionId);
     }
 
@@ -82,22 +82,22 @@ public class TransactionService implements  ITransactionService{
         return summaryByCities;
     }
 
-    private File getProductFileInFolder(final String folderLocation)  {
-        File folder=new File(folderLocation);
+    private File getProductFileInFolder(final String folderLocation) {
+        File folder = new File(folderLocation);
         if (folder.isFile())
-            throw new ResourceNotFoundException ("configured folderlocation for product is not a directory "+folderLocation);
-        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length<1)
-            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file "+folderLocation);
+            throw new ResourceNotFoundException("configured folderlocation for product is not a directory " + folderLocation);
+        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length < 1)
+            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file " + folderLocation);
         return folder.listFiles()[0];
     }
 
     private File[] getUnreadTransactionFiles(final String folderLocation) {
-        File folder=new File(folderLocation);
+        File folder = new File(folderLocation);
         if (folder.isFile())
-            throw new ResourceNotFoundException ("configured folderlocation for product is not a directory "+folderLocation);
-        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length<1)
-            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file "+folderLocation);
-        return Arrays.stream(folder.listFiles()).filter(file->!Store.isFileProcessed(file)).toArray(File[]::new);
+            throw new ResourceNotFoundException("configured folderlocation for product is not a directory " + folderLocation);
+        if (Objects.isNull(folder.listFiles()) || folder.listFiles().length < 1)
+            throw new ResourceNotFoundException("configured folderlocation for product does not contain any file " + folderLocation);
+        return Arrays.stream(folder.listFiles()).filter(file -> !Store.isFileProcessed(file)).toArray(File[]::new);
     }
 
 }

@@ -14,35 +14,35 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Store {
 
-    private static final ConcurrentHashMap<Long, Transaction> TRANSACTION_STORE=new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, Transaction> TRANSACTION_STORE = new ConcurrentHashMap<>();
 
-    private static final ConcurrentHashMap<Long, Product> PRODUCT_STORE=new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, Product> PRODUCT_STORE = new ConcurrentHashMap<>();
 
-    private static final HashSet<File> FILES_PROCESSED=new HashSet<>();
+    private static final HashSet<File> FILES_PROCESSED = new HashSet<>();
 
-    public static void addTransactions(List<Transaction> transactions){
-        transactions.forEach(transaction -> TRANSACTION_STORE.putIfAbsent(transaction.getTransactionId(),transaction));
+    public static void addTransactions(List<Transaction> transactions) {
+        transactions.forEach(transaction -> TRANSACTION_STORE.putIfAbsent(transaction.getTransactionId(), transaction));
     }
 
-    public static void addProduct(List<Product> products){
-        products.forEach(product -> PRODUCT_STORE.putIfAbsent(product.getProductId(),product));
+    public static void addProduct(List<Product> products) {
+        products.forEach(product -> PRODUCT_STORE.putIfAbsent(product.getProductId(), product));
     }
 
-    public static Transaction getTransactionById(long transactionId){
-        Transaction transaction =TRANSACTION_STORE.getOrDefault(transactionId,new Transaction());
-        if(transaction.equals(new Transaction()))
-            throw new ResourceNotFoundException("transaction with id "+transactionId+" not found !");
+    public static Transaction getTransactionById(long transactionId) {
+        Transaction transaction = TRANSACTION_STORE.getOrDefault(transactionId, new Transaction());
+        if (transaction.equals(new Transaction()))
+            throw new ResourceNotFoundException("transaction with id " + transactionId + " not found !");
         return transaction;
     }
 
-    public static Collection<Transaction> getAllTransactions(){
+    public static Collection<Transaction> getAllTransactions() {
         return TRANSACTION_STORE.values();
     }
 
-    public static List<CompleteTransaction> getCompleteTransactions(){
-        List<CompleteTransaction> completeTransactions=new ArrayList<>();
+    public static List<CompleteTransaction> getCompleteTransactions() {
+        List<CompleteTransaction> completeTransactions = new ArrayList<>();
         TRANSACTION_STORE.forEach((aLong, transaction) -> {
-            CompleteTransaction completeTransaction=new CompleteTransaction();
+            CompleteTransaction completeTransaction = new CompleteTransaction();
             completeTransaction.setProductId(aLong);
             completeTransaction.setTransactionId(transaction.getTransactionId());
             completeTransaction.setTransactionAmount(transaction.getTransactionAmount());
@@ -51,17 +51,18 @@ public class Store {
             completeTransaction.setProductName(PRODUCT_STORE.get(transaction.getProductId()).getProductName());
             completeTransactions.add(completeTransaction);
         });
-        return  completeTransactions;
+        return completeTransactions;
     }
 
-    public static String getProductNameById(long productId){
+    public static String getProductNameById(long productId) {
         return PRODUCT_STORE.get(productId).getProductName();
     }
-    public static boolean isFileProcessed(File file){
+
+    public static boolean isFileProcessed(File file) {
         return FILES_PROCESSED.contains(file);
     }
 
-    public static boolean markFileAsProcessed(File file){
+    public static boolean markFileAsProcessed(File file) {
         return FILES_PROCESSED.add(file);
     }
 }

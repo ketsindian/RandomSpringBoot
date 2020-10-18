@@ -1,8 +1,6 @@
 package com.example.demo.run;
 
-import com.example.demo.worker.SyncJobCommandInterface;
 import com.example.demo.worker.SyncJobExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;

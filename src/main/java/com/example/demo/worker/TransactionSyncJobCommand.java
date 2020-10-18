@@ -32,7 +32,7 @@ public class TransactionSyncJobCommand implements SyncJobCommandInterface {
     @Override
     public void run() {
         try {
-            List<Transaction> transactionsToSync=transactionService.getLatestTransactionsFromFile();
+            List<Transaction> transactionsToSync = transactionService.getLatestTransactionsFromFile();
             Store.addTransactions(transactionsToSync);
 
             System.out.println("RUNNING TRANSACTION SYNC");
