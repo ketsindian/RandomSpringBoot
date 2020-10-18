@@ -5,12 +5,17 @@ import com.example.demo.store.Store;
 import com.example.demo.utils.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class ProductSyncJobCommand implements SyncJobCommandInterface {
+
+    @Value("${app.productsynccommand.intervalindays}")
+    private int intervalInDays;
+
 
     final
     ITransactionService transactionService;
@@ -28,7 +33,7 @@ public class ProductSyncJobCommand implements SyncJobCommandInterface {
 
     @Override
     public long getRecurringInterval() {
-        return 2;
+        return this.intervalInDays;
     }
 
     @Override
